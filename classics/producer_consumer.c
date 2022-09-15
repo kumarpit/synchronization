@@ -10,13 +10,14 @@ int current_index = 0;
 
 void *producer(void *a) {
     int event;
-    for (int i=0; i < 10; i++) {
+    for (int i=0; i < 20; i++) {
         event = i;
         
         sem_wait(&spaces);
         
         sem_wait(&mutex);
             buffer[current_index] = event;
+            // printf("produced: %d at index: %d\n", buffer[current_index], current_index);
             current_index++;
         sem_post(&mutex);
         
@@ -25,12 +26,12 @@ void *producer(void *a) {
 }
 
 void *consumer(void *a) {
-    for (int i=0; i < 10; i++) {
+    for (int i=0; i < 20; i++) {
         sem_wait(&items);
 
         sem_wait(&mutex);
-            printf("%d \n", buffer[current_index]);
             current_index--;
+            printf("consumed: %d at index: %d \n", buffer[current_index], current_index);
         sem_post(&mutex);
 
         sem_post(&spaces);
